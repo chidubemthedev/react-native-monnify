@@ -1,0 +1,44 @@
+{
+  "name": "react-native-monnify",
+  "version": "1.0.0",
+  "description": "Expo-friendly Monnify Web SDK wrapper for React Native",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chidubemthedev/react-native-monnify.git"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "monnify",
+    "payment",
+    "webview"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chidubemthedev/react-native-monnify/issues"
+  },
+  "homepage": "https://github.com/chidubemthedev/react-native-monnify#readme",
+  "devDependencies": {
+    "typescript": "*",
+    "@types/react": "*",
+    "@types/react-native": "*"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-native": ">=0.64.0",
+    "react-native-webview": ">=11.0.0"
+  }
+}
