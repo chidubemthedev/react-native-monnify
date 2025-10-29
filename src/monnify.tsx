@@ -1,5 +1,12 @@
 import React, { useRef } from "react";
-import { Modal, Platform, StyleSheet, View } from "react-native";
+import {
+  Modal,
+  Platform,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import WebView, { WebViewMessageEvent } from "react-native-webview";
 import { generateHtml } from "./utils/generateHtml";
 import { MonnifyProps } from "./types";
@@ -49,6 +56,15 @@ const Monnify: React.FC<MonnifyProps> = ({
       onRequestClose={() => onDismiss?.()}
     >
       <View style={[styles.container, customStyles?.webViewContainer]}>
+        {Platform.OS === "ios" && (
+          <TouchableOpacity
+            onPress={() => onDismiss?.()}
+            style={styles.closeButton}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        )}
         <WebView
           ref={webRef}
           originWhitelist={["*"]}
@@ -82,6 +98,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     overflow: "hidden",
     backgroundColor: "#fff",
+  },
+  closeButton: {
+    position: "absolute",
+    top: Platform.OS === "ios" ? 60 : 20,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 16,
+    padding: 8,
+  },
+  closeText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
