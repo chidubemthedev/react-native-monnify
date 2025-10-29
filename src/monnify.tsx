@@ -1,5 +1,13 @@
-import React, { useRef } from "react";
-import { Modal, Platform, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import {
+  Modal,
+  Platform,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Animated,
+} from "react-native";
 import WebView, { WebViewMessageEvent } from "react-native-webview";
 import { generateHtml } from "./utils/generateHtml";
 import { MonnifyProps } from "./types";
@@ -13,6 +21,19 @@ const Monnify: React.FC<MonnifyProps> = ({
   customStyles,
 }) => {
   const webRef = useRef<WebView>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible && Platform.OS === "ios") {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      fadeAnim.setValue(0);
+    }
+  }, [visible]);
 
   const handleMessage = (event: WebViewMessageEvent) => {
     try {
@@ -49,6 +70,19 @@ const Monnify: React.FC<MonnifyProps> = ({
       onRequestClose={() => onDismiss?.()}
     >
       <View style={[styles.container, customStyles?.webViewContainer]}>
+        {Platform.OS === "ios" && (
+          <Animated.View
+            style={[styles.closeButtonContainer, { opacity: fadeAnim }]}
+          >
+            <TouchableOpacity
+              onPress={() => onDismiss?.()}
+              style={styles.closeButton}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        )}
         <WebView
           ref={webRef}
           originWhitelist={["*"]}
@@ -82,6 +116,22 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     overflow: "hidden",
     backgroundColor: "#fff",
+  },
+  closeButtonContainer: {
+    position: "absolute",
+    top: Platform.OS === "ios" ? 60 : 20,
+    right: 16,
+    zIndex: 10,
+  },
+  closeButton: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 16,
+    padding: 8,
+  },
+  closeText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
