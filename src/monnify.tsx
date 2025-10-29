@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Modal,
   Platform,
@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Animated,
 } from "react-native";
 import WebView, { WebViewMessageEvent } from "react-native-webview";
 import { generateHtml } from "./utils/generateHtml";
@@ -20,6 +21,19 @@ const Monnify: React.FC<MonnifyProps> = ({
   customStyles,
 }) => {
   const webRef = useRef<WebView>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible && Platform.OS === "ios") {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      fadeAnim.setValue(0);
+    }
+  }, [visible]);
 
   const handleMessage = (event: WebViewMessageEvent) => {
     try {
@@ -57,13 +71,17 @@ const Monnify: React.FC<MonnifyProps> = ({
     >
       <View style={[styles.container, customStyles?.webViewContainer]}>
         {Platform.OS === "ios" && (
-          <TouchableOpacity
-            onPress={() => onDismiss?.()}
-            style={styles.closeButton}
-            activeOpacity={0.8}
+          <Animated.View
+            style={[styles.closeButtonContainer, { opacity: fadeAnim }]}
           >
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onDismiss?.()}
+              style={styles.closeButton}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </Animated.View>
         )}
         <WebView
           ref={webRef}
@@ -99,11 +117,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#fff",
   },
-  closeButton: {
+  closeButtonContainer: {
     position: "absolute",
     top: Platform.OS === "ios" ? 60 : 20,
     right: 16,
     zIndex: 10,
+  },
+  closeButton: {
     backgroundColor: "rgba(0,0,0,0.5)",
     borderRadius: 16,
     padding: 8,
