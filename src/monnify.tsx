@@ -89,7 +89,8 @@ const Monnify: React.FC<MonnifyProps> = ({
           javaScriptEnabled
           domStorageEnabled
           startInLoadingState
-          setSupportMultipleWindows={false}
+          setSupportMultipleWindows
+          javaScriptCanOpenWindowsAutomatically
           allowFileAccess
           allowUniversalAccessFromFileURLs
           mixedContentMode="always"
